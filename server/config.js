@@ -1,6 +1,6 @@
 module.exports = {
     apiport: 3000,
-    db: {
+    dbtest: {
         host: 'localhost',
         port: 5432,
         database: 'XsollaTest',

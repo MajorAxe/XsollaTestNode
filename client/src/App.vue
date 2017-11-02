@@ -4,11 +4,13 @@
       el-aside
         sidebar
       el-main
-        router-view(:orders='orders', :currencies='availableCurrencies')
+        router-view(:orders='orders', :currencies='availableCurrencies', v-on:deleteorder='deleteOrder')
 </template>
 
 <script>
   import Sidebar from './components/Sidebar.vue'
+  import submitOrder from './util/submitForm'
+
   export default {
     name: 'app',
     beforeMount () {
@@ -59,6 +61,34 @@
             offset: 100,
             position: 'bottom-left'
           })
+        }
+      },
+      async deleteOrder (number) {
+        const response = await submitOrder('DELETE', {orderNumber: number})
+        if (response.ok) {
+          const indexToDel = this.orders.findIndex(order => order.order_number === number)
+          this.orders.splice(indexToDel, 1)
+          this.$notify({
+            title: 'Удален',
+            message: `Заказ ${number} успешно удален`,
+            type: 'success',
+            offset: 100,
+            position: 'bottom-left'
+          })
+        } else {
+          const errors = await response.json()
+          let timeout = 0
+          for (const err of errors) {
+            setTimeout(() => {
+              this.$notify.error({
+                title: 'Ошибка',
+                message: err,
+                offset: 100,
+                position: 'bottom-left'
+              })
+            }, timeout)
+            timeout += 200
+          }
         }
       }
     }

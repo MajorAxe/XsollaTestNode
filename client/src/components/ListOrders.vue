@@ -8,7 +8,6 @@
 
 <script>
   import ListElement from './ListElement.vue'
-  import submitOrder from '../util/submitForm'
 
   export default {
     components: {ListElement},
@@ -23,7 +22,6 @@
     },
     data () {
       return {
-        localList: [],
         ordersOnPage: 15,
         currentPage: 1,
         displayPagination: false
@@ -32,39 +30,14 @@
     asyncComputed: {
       visibleOrdersList: {
         async get () {
-          return this.localList.slice((this.currentPage - 1) * this.ordersOnPage, this.currentPage * this.ordersOnPage)
+          return this.orders.slice((this.currentPage - 1) * this.ordersOnPage, this.currentPage * this.ordersOnPage)
         },
         default: []
       }
     },
     methods: {
-      async deleteOrder (number) {
-        const response = await submitOrder('DELETE', {orderNumber: number})
-        if (response.ok) {
-          const indexToDel = this.localList.findIndex(order => order.order_number === number)
-          this.localList.splice(indexToDel, 1)
-          this.$notify({
-            title: 'Удален',
-            message: `Заказ ${number} успешно удален`,
-            type: 'success',
-            offset: 100,
-            position: 'bottom-left'
-          })
-        } else {
-          const errors = await response.json()
-          let timeout = 0
-          for (const err of errors) {
-            setTimeout(() => {
-              this.$notify.error({
-                title: 'Ошибка',
-                message: err,
-                offset: 100,
-                position: 'bottom-left'
-              })
-            }, timeout)
-            timeout += 200
-          }
-        }
+      deleteOrder (number) {
+        this.$emit('deleteorder', number)
       }
     }
   }

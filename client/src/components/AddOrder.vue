@@ -50,7 +50,7 @@
     data () {
       return {
         form: {
-          orderNumber: 0,
+          orderNumber: 1,
           price: '0.00',
           currency: 'USD',
           cardNumber: '',

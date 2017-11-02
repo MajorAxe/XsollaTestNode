@@ -6,7 +6,7 @@ export default () => {
       { required: true, validator: orderNumber, trigger: 'blur' }
     ],
     price: [
-      { required: true, validator: price, trigger: 'blur' }
+      { required: true, validator: price, trigger: 'change, blur' }
     ],
     currency: [
       { required: true, validator: currency, trigger: 'blur' }
@@ -52,8 +52,8 @@ function name (rule, value, callback) {
 }
 
 function expiration (rule, value, callback) {
-  if (!serverValidation.expirationDateValid(value)) callback(new Error('Формат XX/XX'))
-  if (!serverValidation.expirationDateActual(value)) callback(new Error('Карта просрочена'))
+  if (!serverValidation.expirationDateValid(value.trim())) callback(new Error('Формат XX/XX'))
+  if (!serverValidation.expirationDateActual(value.trim())) callback(new Error('Карта просрочена'))
   else callback()
 }
 

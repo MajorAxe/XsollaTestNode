@@ -5,7 +5,7 @@
         el-form-item
           el-input(v-model='formInline.orderNumber', placeholder='Номер заказа', :disabled='true')
       el-col(:md='3')
-        el-form-item(prop='orderNumber')
+        el-form-item(prop='price')
           el-input(v-model='formInline.price', placeholder='Цена')
       el-col(:md='2')
         el-form-item(prop='currency')

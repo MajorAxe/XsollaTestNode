@@ -13,9 +13,6 @@
   export default {
     components: {ListElement},
     name: 'ListOrder',
-    beforeMount () {
-      this.getOrdersList()
-    },
     props: {
       currencies: {
         default: []
@@ -67,24 +64,6 @@
             }, timeout)
             timeout += 200
           }
-        }
-      },
-      async getOrdersList () {
-        const response = await fetch('/order', {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json'
-          }
-        })
-        if (response.ok) {
-          this.localList = await response.json()
-        } else {
-          this.$notify.error({
-            title: 'Ошибка',
-            message: 'Не удалось получить список заказов',
-            offset: 100,
-            position: 'bottom-left'
-          })
         }
       }
     }

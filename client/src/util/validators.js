@@ -42,7 +42,7 @@ function currency (rule, value, callback) {
 }
 
 function cardNumber (rule, value, callback) {
-  if (!serverValidation.cardNumber(value.trim())) callback(new Error('Введите корректный номер карты'))
+  if (!serverValidation.cardNumber(value.trim())) callback(new Error('Введите корректный номер'))
   else callback()
 }
 

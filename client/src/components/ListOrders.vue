@@ -33,45 +33,9 @@
       }
     },
     asyncComputed: {
-      ordersList: {
-        async get () {
-          const response = await fetch('http://localhost/order', {
-            method: 'GET',
-            headers: {
-              'Accept': 'application/json'
-            }
-          })
-          if (response.ok) return response.json()
-          this.$notify.error({
-            title: 'Ошибка',
-            message: 'Не удалось получить список заказов',
-            offset: 100,
-            position: 'bottom-left'
-          })
-        },
-        default: []
-      },
       visibleOrdersList: {
         async get () {
           return this.localList.slice((this.currentPage - 1) * this.ordersOnPage, this.currentPage * this.ordersOnPage)
-        },
-        default: []
-      },
-      availableCurrencies: {
-        async get () {
-          const response = await fetch('http://localhost/currencies', {
-            method: 'GET',
-            headers: {
-              'Accept': 'application/json'
-            }
-          })
-          if (response.ok) return response.json()
-          this.$notify.error({
-            title: 'Ошибка',
-            message: 'Не удалось получить список валют',
-            offset: 100,
-            position: 'bottom-left'
-          })
         },
         default: []
       }
@@ -106,7 +70,7 @@
         }
       },
       async getOrdersList () {
-        const response = await fetch('http://localhost/order', {
+        const response = await fetch('/order', {
           method: 'GET',
           headers: {
             'Accept': 'application/json'

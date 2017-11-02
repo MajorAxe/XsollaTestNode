@@ -93,13 +93,7 @@
         })
       },
       resetForm () {
-        this.form.orderNumber = ''
-        this.form.price = 0.00
-        this.form.currency = 'USD'
-        this.form.cardNumber = ''
-        this.form.name = ''
-        this.form.expiration = ''
-        this.form.cvv = ''
+        this.$refs.addForm.resetFields()
       }
     }
   }

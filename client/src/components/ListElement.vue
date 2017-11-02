@@ -1,27 +1,27 @@
 <template lang="pug">
-  el-form.demo-form-inline(:inline='true', :model='formInline', size='mini')
+  el-form.demo-form-inline(:inline='true', :rules='rules', :model='formInline', size='mini')
     el-row(:gutter='10')
       el-col(:md='2')
         el-form-item
           el-input(v-model='formInline.orderNumber', placeholder='Номер заказа', :disabled='true')
-      el-col(:md='3')    
-        el-form-item
+      el-col(:md='3')
+        el-form-item(prop='orderNumber')
           el-input(v-model='formInline.price', placeholder='Цена')
       el-col(:md='2')
-        el-form-item
+        el-form-item(prop='currency')
           el-select(v-model='formInline.currency')
             el-option(v-for='curr in availableCurrencies', :key='curr', :value='curr')
       el-col(:md='3')
-        el-form-item
+        el-form-item(prop='cardNumber')
           el-input(v-model='formInline.cardNumber', placeholder='Номер карты')
       el-col(:md='3')
-        el-form-item
+        el-form-item(prop='name')
           el-input(v-model='formInline.name', placeholder='Имя владельца')
       el-col(:md='3')
-        el-form-item
+        el-form-item(prop='expiration')
           el-input(v-model='formInline.expiration', placeholder='Expires')
       el-col(:md='3')
-        el-form-item
+        el-form-item(prop='cvv')
           el-input(v-model='formInline.cvv', placeholder='CVV')
       el-col(:md='3')
         el-form-item
@@ -38,7 +38,9 @@
 <script>
   import ElFormItem from '../../node_modules/element-ui/packages/form/src/form-item.vue'
   import submitOrder from '../util/submitForm'
-
+  import validator from '../util/validators'
+  const rules = validator()
+  
   export default {
     components: {ElFormItem},
     props: ['order', 'availableCurrencies'],
@@ -53,6 +55,7 @@
           expiration: this.order.expiration,
           cvv: this.order.cvv
         },
+        rules: rules,
         confirmationVisible: false
       }
     },

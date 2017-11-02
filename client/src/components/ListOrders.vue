@@ -35,7 +35,6 @@
     asyncComputed: {
       ordersList: {
         async get () {
-          console.log('UPDATING')
           const response = await fetch('http://localhost/order', {
             method: 'GET',
             headers: {
@@ -54,7 +53,7 @@
       },
       visibleOrdersList: {
         async get () {
-          return this.orders.slice((this.currentPage - 1) * this.ordersOnPage, this.currentPage * this.ordersOnPage)
+          return this.localList.slice((this.currentPage - 1) * this.ordersOnPage, this.currentPage * this.ordersOnPage)
         },
         default: []
       },
@@ -81,8 +80,8 @@
       async deleteOrder (number) {
         const response = await submitOrder('DELETE', {orderNumber: number})
         if (response.ok) {
-          const indexToDel = this.orders.findIndex(order => order.order_number === number)
-          this.orders.splice(indexToDel, 1)
+          const indexToDel = this.localList.findIndex(order => order.order_number === number)
+          this.localList.splice(indexToDel, 1)
           this.$notify({
             title: 'Удален',
             message: `Заказ ${number} успешно удален`,
@@ -115,7 +114,6 @@
         })
         if (response.ok) {
           this.localList = await response.json()
-          console.log(this.localList)
         } else {
           this.$notify.error({
             title: 'Ошибка',

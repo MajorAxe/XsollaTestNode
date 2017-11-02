@@ -1,5 +1,5 @@
 <template lang="pug">
-  el-form.demo-form-inline(:inline='true', :rules='rules', :model='formInline', size='mini')
+  el-form.demo-form-inline(:inline='true', :rules='rules', :model='formInline', size='mini', ref='editForm')
     el-row(:gutter='10')
       el-col(:md='2')
         el-form-item
@@ -40,7 +40,7 @@
   import submitOrder from '../util/submitForm'
   import validator from '../util/validators'
   const rules = validator()
-  
+
   export default {
     components: {ElFormItem},
     props: ['order', 'availableCurrencies'],
@@ -61,30 +61,33 @@
     },
     methods: {
       async editOrder () {
-        const response = await submitOrder('PUT', this.formInline)
-        if (response.ok) {
-          this.$notify({
-            title: 'Изменен',
-            message: `Заказ ${this.formInline.orderNumber} успешно отредактирован`,
-            type: 'success',
-            offset: 100,
-            position: 'bottom-left'
-          })
-        } else {
-          const errors = await response.json()
-          let timeout = 0
-          for (const err of errors) {
-            setTimeout(() => {
-              this.$notify.error({
-                title: 'Ошибка',
-                message: err,
-                offset: 100,
-                position: 'bottom-left'
-              })
-            }, timeout)
-            timeout += 200
+        this.$refs.editForm.validate(async (valid) => {
+          if (!valid) return false
+          const response = await submitOrder('PUT', this.formInline)
+          if (response.ok) {
+            this.$notify({
+              title: 'Изменен',
+              message: `Заказ ${this.formInline.orderNumber} успешно отредактирован`,
+              type: 'success',
+              offset: 100,
+              position: 'bottom-left'
+            })
+          } else {
+            const errors = await response.json()
+            let timeout = 0
+            for (const err of errors) {
+              setTimeout(() => {
+                this.$notify.error({
+                  title: 'Ошибка',
+                  message: err,
+                  offset: 100,
+                  position: 'bottom-left'
+                })
+              }, timeout)
+              timeout += 200
+            }
           }
-        }
+        })
       },
       deleteOrder () {
         this.confirmationVisible = false
@@ -99,6 +102,6 @@
     text-align center
     font-family 'Avenir', Helvetica, Arial, sans-serif
     -webkit-font-smoothing antialiased
-    -moz-osx-font-smoothing grayscale 
-    color #2c3e50                      
+    -moz-osx-font-smoothing grayscale
+    color #2c3e50
 </style>

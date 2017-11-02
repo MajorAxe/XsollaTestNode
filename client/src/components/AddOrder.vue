@@ -1,5 +1,5 @@
 <template lang="pug">
-  el-form.fixed-width(ref='form', :model='form', :rules='rules', label-width='125px')
+  el-form.fixed-width(:model='form', :rules='rules', label-width='125px', ref='addForm')
     el-row(:gutter='10')
       el-col(:md='8')
         el-form-item(label='Номер заказа', :required='true', prop='orderNumber')
@@ -63,31 +63,34 @@
     },
     methods: {
       async onSubmit () {
-        const response = await submitOrder('POST', this.form)
-        if (response.ok) {
-          this.$notify({
-            title: 'Добавлен',
-            message: `Заказ ${this.form.orderNumber} успешно добавлен`,
-            type: 'success',
-            offset: 100,
-            position: 'bottom-left'
-          })
-          this.resetForm()
-        } else {
-          const errors = await response.json()
-          let timeout = 0
-          for (const err of errors) {
-            setTimeout(() => {
-              this.$notify.error({
-                title: 'Ошибка',
-                message: err,
-                offset: 100,
-                position: 'bottom-left'
-              })
-            }, timeout)
-            timeout += 200
+        this.$refs.addForm.validate(async (valid) => {
+          if (!valid) return false
+          const response = await submitOrder('POST', this.form)
+          if (response.ok) {
+            this.$notify({
+              title: 'Добавлен',
+              message: `Заказ ${this.form.orderNumber} успешно добавлен`,
+              type: 'success',
+              offset: 100,
+              position: 'bottom-left'
+            })
+            this.resetForm()
+          } else {
+            const errors = await response.json()
+            let timeout = 0
+            for (const err of errors) {
+              setTimeout(() => {
+                this.$notify.error({
+                  title: 'Ошибка',
+                  message: err,
+                  offset: 100,
+                  position: 'bottom-left'
+                })
+              }, timeout)
+              timeout += 200
+            }
           }
-        }
+        })
       },
       resetForm () {
         this.form.orderNumber = ''

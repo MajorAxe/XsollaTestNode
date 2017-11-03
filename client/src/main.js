@@ -7,7 +7,6 @@ import router from './router'
 
 Vue.use(AsyncComputed)
 Vue.use(ElementUI)
-
 Vue.config.productionTip = false
 
 /* eslint-disable no-new */

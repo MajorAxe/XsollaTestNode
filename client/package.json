@@ -14,8 +14,8 @@
     "lint": "eslint --ext .js,.vue src test/unit/specs test/e2e/specs"
   },
   "dependencies": {
+    "awesome-mask": "^1.0.9",
     "element-ui": "^2.0.2",
-    "fetch-formify": "^1.0.0",
     "vue": "^2.5.2",
     "vue-async-computed": "^3.3.1",
     "vue-router": "^3.0.1"

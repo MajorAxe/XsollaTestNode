@@ -6,13 +6,13 @@
           el-input-number(v-model='form.orderNumber', :min=1, :controls='false')
       el-col(:md='16')
         el-form-item(label='Цена', prop='price')
-          el-input.input-with-select(type='text', v-model='form.price')
+          el-input.input-with-select(type='text', v-model='form.price', v-mask="'money'", placeholder='0.00')
             el-select(v-model='form.currency', slot='append')
               el-option(v-for='curr in currencies', :key='curr', :value='curr')
     el-row(:gutter='10')
       el-col(:md='24')
         el-form-item(label='Номер карты', prop='cardNumber')
-          el-input(type='text', v-model='form.cardNumber', prefix-icon='el-icon-tickets')
+          el-input(type='text', v-model='form.cardNumber', prefix-icon='el-icon-tickets', v-mask='masks.card')
     el-row(:gutter='10')
       el-col(:md='24')
         el-form-item(label='Имя владельца', prop='name')
@@ -20,10 +20,10 @@
     el-row(:gutter='10')
       el-col(:md='12')
         el-form-item(label='Expiration date', prop='expiration')
-          el-input(type='text', v-model='form.expiration', prefix-icon='el-icon-date')
+          el-input(type='text', v-model='form.expiration', prefix-icon='el-icon-date', v-mask='masks.exp', placeholder='MM / YY')
       el-col(:md='12')      
         el-form-item(label='CVV', prop='cvv')
-          el-input(type='text', v-model='form.cvv', prefix-icon='el-icon-setting')
+          el-input(type='text', v-model='form.cvv', prefix-icon='el-icon-setting', v-mask='masks.cvv', placeholder='CVV')
     el-row(:gutter='10')
       el-col(:md='12')
         el-form-item
@@ -32,12 +32,17 @@
 
 <script>
   import ElInput from '../../node_modules/element-ui/packages/input/src/input.vue'
+  import AwesomeMask from 'awesome-mask'
   import submitOrder from '../util/submitForm'
   import validator from '../util/validators'
+  import masks from '../util/inputMasks'
   const rules = validator()
 
   export default {
     components: {ElInput},
+    directives: {
+      'mask': AwesomeMask
+    },
     name: 'AddOrder',
     props: {
       currencies: {
@@ -51,49 +56,46 @@
       return {
         form: {
           orderNumber: 1,
-          price: '0.00',
+          price: '',
           currency: 'USD',
           cardNumber: '',
           name: '',
           expiration: '',
           cvv: ''
         },
-        rules: rules
+        rules,
+        masks
       }
     },
     methods: {
       async onSubmit () {
-        this.$refs.addForm.validate(async (valid) => {
-          if (!valid) return false
-          const response = await submitOrder('POST', this.form)
-          if (response.ok) {
-            this.$notify({
-              title: 'Добавлен',
-              message: `Заказ ${this.form.orderNumber} успешно добавлен`,
-              type: 'success',
-              offset: 100,
-              position: 'bottom-left'
-            })
-            this.resetForm()
-          } else {
-            const errors = await response.json()
-            let timeout = 0
-            for (const err of errors) {
-              setTimeout(() => {
-                this.$notify.error({
-                  title: 'Ошибка',
-                  message: err,
-                  offset: 100,
-                  position: 'bottom-left'
-                })
-              }, timeout)
-              timeout += 200
-            }
+        const valid = await this.$refs.addForm.validate()
+        if (!valid) return false
+        const response = await submitOrder('POST', this.form)
+        if (response.ok) {
+          this.$notify({
+            title: 'Добавлен',
+            message: `Заказ ${this.form.orderNumber} успешно добавлен`,
+            type: 'success',
+            offset: 100,
+            position: 'bottom-left'
+          })
+          this.$refs.addForm.resetFields()
+        } else {
+          const errors = await response.json()
+          let timeout = 0
+          for (const err of errors) {
+            setTimeout(() => {
+              this.$notify.error({
+                title: 'Ошибка',
+                message: err,
+                offset: 100,
+                position: 'bottom-left'
+              })
+            }, timeout)
+            timeout += 200
           }
-        })
-      },
-      resetForm () {
-        this.$refs.addForm.resetFields()
+        }
       }
     }
   }

@@ -6,7 +6,7 @@ export default () => {
       { required: true, validator: orderNumber, trigger: 'blur' }
     ],
     price: [
-      { required: true, validator: price, trigger: 'change, blur' }
+      { required: true, validator: price, trigger: 'blur' }
     ],
     currency: [
       { required: true, validator: currency, trigger: 'blur' }
@@ -27,33 +27,39 @@ export default () => {
 }
 
 function orderNumber (rule, value, callback) {
-  if (!serverValidation.orderNumber(value)) callback(new Error('Ошибка'))
+  const valuePure = value.toString()
+  if (!serverValidation.orderNumber(valuePure)) callback(new Error('Ошибка'))
   else callback()
 }
 
 function price (rule, value, callback) {
-  if (!serverValidation.price(value)) callback(new Error('Введите цену в формате *.XX'))
+  const valuePure = value.toString().replace(/\s/g, '')
+  if (!serverValidation.price(valuePure)) callback(new Error('Введите цену в формате *.XX'))
   else callback()
 }
 
 function currency (rule, value, callback) {
-  if (!/^\w{3}$/.test(value)) callback(new Error('Выберите валюту из списка'))
+  const valuePure = value.toString()
+  if (!/^\w{3}$/.test(valuePure)) callback(new Error('Выберите валюту из списка'))
   else callback()
 }
 
 function cardNumber (rule, value, callback) {
-  if (!serverValidation.cardNumber(value.trim())) callback(new Error('Введите корректный номер'))
+  const valuePure = value.toString().replace(/\s/g, '')
+  if (!serverValidation.cardNumber(valuePure)) callback(new Error('Введите корректный номер'))
   else callback()
 }
 
 function name (rule, value, callback) {
-  if (!serverValidation.name(value)) callback(new Error('Имя и фамилия, через пробел'))
+  const valuePure = value.toString()
+  if (!serverValidation.name(valuePure)) callback(new Error('Имя и фамилия, через пробел'))
   else callback()
 }
 
 function expiration (rule, value, callback) {
-  if (!serverValidation.expirationDateValid(value.trim())) callback(new Error('Формат XX/XX'))
-  if (!serverValidation.expirationDateActual(value.trim())) callback(new Error('Карта просрочена'))
+  const valuePure = value.toString().replace(/\s/g, '')
+  if (!serverValidation.expirationDateValid(valuePure)) callback(new Error('Формат MM / YY'))
+  else if (!serverValidation.expirationDateActual(valuePure)) callback(new Error('Карта просрочена'))
   else callback()
 }
 

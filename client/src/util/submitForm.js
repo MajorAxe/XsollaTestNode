@@ -14,7 +14,7 @@ function encodeForm (form) {
   let formBody = []
   for (let property in form) {
     const encodedKey = encodeURIComponent(property),
-      encodedValue = typeof form[property] === 'string' ? encodeURIComponent(form[property].trim()) : encodeURIComponent(form[property])
+      encodedValue = property === 'name' ? encodeURIComponent(form[property]) : encodeURIComponent(form[property].toString().replace(/\s/g, ''))
     formBody.push(encodedKey + '=' + encodedValue)
   }
   return formBody.join('&')

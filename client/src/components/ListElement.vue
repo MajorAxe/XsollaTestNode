@@ -6,23 +6,23 @@
           el-input(v-model='formInline.orderNumber', placeholder='Номер заказа', :disabled='true')
       el-col(:md='3')
         el-form-item(prop='price')
-          el-input(v-model='formInline.price', placeholder='Цена')
+          el-input(v-model='formInline.price', v-mask="'money'", placeholder='0.00')
       el-col(:md='2')
         el-form-item(prop='currency')
           el-select(v-model='formInline.currency')
             el-option(v-for='curr in availableCurrencies', :key='curr', :value='curr')
       el-col(:md='3')
         el-form-item(prop='cardNumber')
-          el-input(v-model='formInline.cardNumber', placeholder='Номер карты')
+          el-input(v-model='formInline.cardNumber', placeholder='Номер карты', v-mask='masks.card')
       el-col(:md='3')
         el-form-item(prop='name')
           el-input(v-model='formInline.name', placeholder='Имя владельца')
       el-col(:md='3')
         el-form-item(prop='expiration')
-          el-input(v-model='formInline.expiration', placeholder='Expires')
+          el-input(v-model='formInline.expiration', v-mask='masks.exp', placeholder='MM / YY')
       el-col(:md='3')
         el-form-item(prop='cvv')
-          el-input(v-model='formInline.cvv', placeholder='CVV')
+          el-input(v-model='formInline.cvv', v-mask='masks.cvv', placeholder='CVV')
       el-col(:md='3')
         el-form-item
           el-button-group
@@ -37,12 +37,17 @@
 
 <script>
   import ElFormItem from '../../node_modules/element-ui/packages/form/src/form-item.vue'
+  import AwesomeMask from 'awesome-mask'
   import submitOrder from '../util/submitForm'
   import validator from '../util/validators'
+  import masks from '../util/inputMasks'
   const rules = validator()
 
   export default {
     components: {ElFormItem},
+    directives: {
+      'mask': AwesomeMask
+    },
     props: ['order', 'availableCurrencies'],
     data () {
       return {
@@ -55,39 +60,39 @@
           expiration: this.order.expiration,
           cvv: this.order.cvv
         },
-        rules: rules,
+        rules,
+        masks,
         confirmationVisible: false
       }
     },
     methods: {
       async editOrder () {
-        this.$refs.editForm.validate(async (valid) => {
-          if (!valid) return false
-          const response = await submitOrder('PUT', this.formInline)
-          if (response.ok) {
-            this.$notify({
-              title: 'Изменен',
-              message: `Заказ ${this.formInline.orderNumber} успешно отредактирован`,
-              type: 'success',
-              offset: 100,
-              position: 'bottom-left'
-            })
-          } else {
-            const errors = await response.json()
-            let timeout = 0
-            for (const err of errors) {
-              setTimeout(() => {
-                this.$notify.error({
-                  title: 'Ошибка',
-                  message: err,
-                  offset: 100,
-                  position: 'bottom-left'
-                })
-              }, timeout)
-              timeout += 200
-            }
+        const valid = await this.$refs.editForm.validate()
+        if (!valid) return false
+        const response = await submitOrder('PUT', this.formInline)
+        if (response.ok) {
+          this.$notify({
+            title: 'Изменен',
+            message: `Заказ ${this.formInline.orderNumber} успешно отредактирован`,
+            type: 'success',
+            offset: 100,
+            position: 'bottom-left'
+          })
+        } else {
+          const errors = await response.json()
+          let timeout = 0
+          for (const err of errors) {
+            setTimeout(() => {
+              this.$notify.error({
+                title: 'Ошибка',
+                message: err,
+                offset: 100,
+                position: 'bottom-left'
+              })
+            }, timeout)
+            timeout += 200
           }
-        })
+        }
       },
       deleteOrder () {
         this.confirmationVisible = false

@@ -80,6 +80,7 @@
             offset: 100,
             position: 'bottom-left'
           })
+          this.$emit('addorder', this.form)
           this.$refs.addForm.resetFields()
         } else {
           const errors = await response.json()

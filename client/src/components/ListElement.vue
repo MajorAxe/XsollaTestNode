@@ -6,20 +6,20 @@
           el-input(v-model='formInline.orderNumber', placeholder='Номер заказа', :disabled='true')
       el-col(:md='3')
         el-form-item(prop='price')
-          el-input(v-model='formInline.price', v-mask="'money'", placeholder='0.00')
+          el-input(v-model='formInline.price', placeholder='0.00')
       el-col(:md='2')
         el-form-item(prop='currency')
           el-select(v-model='formInline.currency')
             el-option(v-for='curr in availableCurrencies', :key='curr', :value='curr')
       el-col(:md='3')
         el-form-item(prop='cardNumber')
-          el-input(v-model='formInline.cardNumber', placeholder='Номер карты', v-mask='masks.card')
+          el-input(v-model='formInline.cardNumber', placeholder='Номер карты')
       el-col(:md='3')
         el-form-item(prop='name')
           el-input(v-model='formInline.name', placeholder='Имя владельца')
       el-col(:md='3')
         el-form-item(prop='expiration')
-          el-input(v-model='formInline.expiration', v-mask='masks.exp', placeholder='MM / YY')
+          el-input(v-model='formInline.expiration', placeholder='MM / YY')
       el-col(:md='3')
         el-form-item(prop='cvv')
           el-input(v-model='formInline.cvv', v-mask='masks.cvv', placeholder='CVV')
@@ -50,14 +50,19 @@
     },
     props: ['order', 'availableCurrencies'],
     data () {
+      let price = this.order.price.toString(),
+        cardNumber = this.order.card_number.toString().trim().match(/.{1,4}/g).join(' ')
+      const decimal = price.split('.')[1]
+      if (!decimal) price += '.00'
+      else if (decimal.length < 2) price += '0'
       return {
         formInline: {
           orderNumber: this.order.order_number,
-          price: this.order.price,
+          price: price,
           currency: this.order.currency,
-          cardNumber: this.order.card_number,
+          cardNumber: cardNumber,
           name: this.order.name,
-          expiration: this.order.expiration,
+          expiration: this.order.expiration.split('/').join(' / '),
           cvv: this.order.cvv
         },
         rules,

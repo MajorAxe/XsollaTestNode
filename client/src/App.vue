@@ -4,7 +4,7 @@
       el-aside
         sidebar
       el-main
-        router-view(:orders='orders', :currencies='availableCurrencies', v-on:deleteorder='deleteOrder')
+        router-view(:orders='orders', :currencies='availableCurrencies', v-on:deleteorder='deleteOrder', v-on:addorder='addOrderToLocalList')
 </template>
 
 <script>
@@ -90,6 +90,17 @@
             timeout += 200
           }
         }
+      },
+      addOrderToLocalList (order) {
+        this.orders.push({
+          order_number: order.orderNumber,
+          price: order.price,
+          currency: order.currency,
+          card_number: order.cardNumber.toString().replace(/\s/g, ''),
+          name: order.name,
+          expiration: order.expiration.toString().replace(/\s/g, ''),
+          cvv: order.cvv
+        })
       }
     }
   }

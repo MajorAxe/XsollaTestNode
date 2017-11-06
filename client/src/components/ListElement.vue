@@ -36,7 +36,7 @@
 </template>
 
 <script>
-  import ElFormItem from '../../node_modules/element-ui/packages/form/src/form-item.vue'
+  import { Notification } from 'element-ui'
   import AwesomeMask from 'awesome-mask'
   import submitOrder from '../util/submitForm'
   import validator from '../util/validators'
@@ -44,7 +44,6 @@
   const rules = validator()
 
   export default {
-    components: {ElFormItem},
     directives: {
       'mask': AwesomeMask
     },
@@ -76,7 +75,7 @@
         if (!valid) return false
         const response = await submitOrder('PUT', this.formInline)
         if (response.ok) {
-          this.$notify({
+          Notification({
             title: 'Изменен',
             message: `Заказ ${this.formInline.orderNumber} успешно отредактирован`,
             type: 'success',
@@ -88,7 +87,7 @@
           let timeout = 0
           for (const err of errors) {
             setTimeout(() => {
-              this.$notify.error({
+              Notification.error({
                 title: 'Ошибка',
                 message: err,
                 offset: 100,

@@ -8,6 +8,7 @@
 </template>
 
 <script>
+  import { Notification } from 'element-ui'
   import Sidebar from './components/Sidebar.vue'
   import submitOrder from './util/submitForm'
 
@@ -37,7 +38,7 @@
         if (response.ok) {
           this.availableCurrencies = await response.json()
         } else {
-          this.$notify.error({
+          Notification.error({
             title: 'Ошибка',
             message: 'Не удалось получить список валют',
             offset: 100,
@@ -55,7 +56,7 @@
         if (response.ok) {
           this.orders = await response.json()
         } else {
-          this.$notify.error({
+          Notification.error({
             title: 'Ошибка',
             message: 'Не удалось получить список заказов',
             offset: 100,
@@ -68,7 +69,7 @@
         if (response.ok) {
           const indexToDel = this.orders.findIndex(order => order.order_number === number)
           this.orders.splice(indexToDel, 1)
-          this.$notify({
+          Notification({
             title: 'Удален',
             message: `Заказ ${number} успешно удален`,
             type: 'success',
@@ -80,7 +81,7 @@
           let timeout = 0
           for (const err of errors) {
             setTimeout(() => {
-              this.$notify.error({
+              Notification.error({
                 title: 'Ошибка',
                 message: err,
                 offset: 100,

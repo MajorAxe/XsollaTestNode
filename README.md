@@ -45,13 +45,13 @@ CVV - 3-4 цифры
 
 Параметры:
 
-orderNumber - номер заказа
-price - цена
-currency - валюта
-cardNumber - номер карты
-name - имя владельца
-expiration - expiration date карты
-cvv - код безопасности карты
+- orderNumber - номер заказа
+- price - цена
+- currency - валюта
+- cardNumber - номер карты
+- name - имя владельца
+- expiration - expiration date карты
+- cvv - код безопасности карты
 
 Все параметры обязательные
 
@@ -62,13 +62,13 @@ cvv - код безопасности карты
 
 Параметры:
 
-orderNumber(обязательный) - номер заказа
-price - цена
-currency - валюта
-cardNumber - номер карты
-name - имя владельца
-expiration - expiration date карты
-cvv - код безопасности карты
+- orderNumber(обязательный) - номер заказа
+- price - цена
+- currency - валюта
+- cardNumber - номер карты
+- name - имя владельца
+- expiration - expiration date карты
+- cvv - код безопасности карты
 
 Все параметры, кроме номера заказа - опциональные
 
@@ -79,4 +79,4 @@ cvv - код безопасности карты
 
 Параметры:
 
-orderNumber(обязательный) - номер заказа
+- orderNumber(обязательный) - номер заказа
